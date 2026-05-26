@@ -19,13 +19,35 @@
       padding: 5px 0;
       border-bottom: 1px solid #222;
     }
+    #container {
+      display: flex;
+      gap: 20px;
+    }
+    .column {
+      width: 50%;
+    }
+
   </style>
 </head>
+
 <body>
 
-<h1>Walt Disney World</h1>
-<p id="updated">Last updated: --</p>
-<div id="rides">Loading...</div>
+<h1 style="text-align:center;">Disney Parks Wait Times</h1>
+
+<div id="container">
+  <div class="column">
+    <h2>Walt Disney World</h2>
+    <div id="wdw"></div>
+  </div>
+
+  <div class="column">
+    <h2>Disneyland Resort</h2>
+    <div id="dlr"></div>
+  </div>
+</div>
+
+<p id="updated" style="text-align:center; margin-top: 15px;">Last updated: --</p>
+
 
 <script>
   
@@ -39,6 +61,17 @@ var landOrder = [
   "EPCOT",
   "Hollywood Studios",
   "Animal Kingdom"
+];
+
+  
+var dlrLandOrder = [
+  "DL - Adventureland / Frontierland",
+  "DL - New Orleans Square / Bayou Country",
+  "DL - Fantasyland",
+  "DL - Toontown",
+  "DL - Galaxy's Edge",
+  "DL - Tomorrowland",
+  "DCA"
 ];
 
 // Map each ride to a land
@@ -94,14 +127,74 @@ var rideToLand = {
   113: "Animal Kingdom", // safaris
   4438: "Animal Kingdom" // na'vi
 };
+
   
+var dlrRideToLand = {
+  // Adventureland / Frontierland
+  323: "DL - Adventureland / Frontierland", // thunder
+  296: "DL - Adventureland / Frontierland", // jungle cruise
+  326: "DL - Adventureland / Frontierland", // indiana jones
+
+  // Bayou / New Orleans Square
+  304: "DL - New Orleans Square / Bayou Country", // pooh
+  14168: "DL - New Orleans Square / Bayou Country", // tiana's
+  13958: "DL - New Orleans Square / Bayou Country", // haunted mansion
+  289: "DL - New Orleans Square / Bayou Country", // pirates
+
+  // Fantasyland
+  307: "DL - Fantasyland", // small world
+  285: "DL - Fantasyland", // alice
+  303: "DL - Fantasyland", // casey jr
+  275: "DL - Fantasyland", // dumbo
+  279: "DL - Fantasyland", // matterhorn
+  280: "DL - Fantasyland", // mr toad
+  281: "DL - Fantasyland", // peter pan
+  282: "DL - Fantasyland", // pinocchio
+  283: "DL - Fantasyland", // snow white
+  305: "DL - Fantasyland", // storybook land
+
+  // Toontown
+  324: "DL - Toontown", // chip n dale
+  11526: "DL - Toontown", // runaway railway
+  332: "DL - Toontown", // roger rabbit
+
+  // Galaxy's Edge
+  6339: "DL - Galaxy's Edge", // smugglers run
+  6340: "DL - Galaxy's Edge", // rotr
+
+  // Tomorrowland
+  287: "DL - Tomorrowland", // astro orbitor
+  317: "DL - Tomorrowland", // autopia
+  273: "DL - Tomorrowland", // buzz
+  276: "DL - Tomorrowland", // nemo
+  284: "DL - Tomorrowland", // space
+  286: "DL - Tomorrowland", // star tours
+
+  // DCA
+  329: "DCA", // guardians
+  8843: "DCA", // web slingers
+  295: "DCA", // rsr
+  312: "DCA", // soarin
+  302: "DCA", // grizzly river run
+  291: "DCA", // mike n sulley
+  319: "DCA", // goofy's
+  322: "DCA", // incredicoaster
+  313: "DCA" // midway mania
+};
+
 
 function fetchTimes() {
   var urls = [
+    // WDW
     "https://queue-times.com/parks/6/queue_times.json",  // Magic Kingdom
     "https://queue-times.com/parks/7/queue_times.json",  // Hollywood Studios
     "https://queue-times.com/parks/8/queue_times.json",  // Animal Kingdom
-    "https://queue-times.com/parks/5/queue_times.json"   // EPCOT
+    "https://queue-times.com/parks/5/queue_times.json",  // EPCOT
+
+    
+    // Disneyland Resort
+    "https://queue-times.com/parks/16/queue_times.json", // Disneyland
+    "https://queue-times.com/parks/17/queue_times.json"  // DCA
   ];
 
   var proxy = "https://api.allorigins.win/raw?url=";
@@ -144,86 +237,90 @@ function combineAndRender(allData) {
   
 
 function render(data) {
-  var container = document.getElementById("rides");
-  container.innerHTML = "";
+  var wdwContainer = document.getElementById("wdw");
+  var dlrContainer = document.getElementById("dlr");
 
-  var ridesByLand = {};
+  wdwContainer.innerHTML = "";
+  dlrContainer.innerHTML = "";
 
-  // Initialize each land
+  var wdwRides = {};
+  var dlrRides = {};
+
   landOrder.forEach(function(land) {
-    ridesByLand[land] = [];
+    wdwRides[land] = [];
   });
 
-  // Collect rides
+  dlrLandOrder.forEach(function(land) {
+    dlrRides[land] = [];
+  });
+
   data.lands.forEach(function(apiLand) {
     apiLand.rides.forEach(function(ride) {
 
-      var land = rideToLand[ride.id];
+      var wdwLand = rideToLand[ride.id];
+      if (wdwLand) wdwRides[wdwLand].push(ride);
 
-      if (land) {
-        ridesByLand[land].push(ride);
-      }
+      var dlrLand = dlrRideToLand[ride.id];
+      if (dlrLand) dlrRides[dlrLand].push(ride);
 
     });
   });
 
-  // Render in order
-  landOrder.forEach(function(land) {
+  renderColumn(wdwContainer, landOrder, wdwRides);
+  renderColumn(dlrContainer, dlrLandOrder, dlrRides);
+
+  // timestamp
+  var now = new Date();
+  document.getElementById("updated").innerHTML =
+    "Last updated: " + now.toLocaleTimeString();
+}
+
+
+function renderColumn(container, order, ridesByLand) {
+
+  order.forEach(function(land) {
 
     var rides = ridesByLand[land];
+    if (!rides || rides.length === 0) return;
 
-    if (rides.length === 0) return;
-
-    // Sort by wait time (highest first)
     rides.sort(function(a, b) {
       return (b.wait_time || 0) - (a.wait_time || 0);
     });
 
-    // Add land header
-    var header = document.createElement("h2");
+    var header = document.createElement("h3");
     header.innerText = land;
-    header.style.fontSize = "18px";
-    header.style.marginTop = "15px";
-
+    header.style.marginTop = "12px";
     container.appendChild(header);
 
-    // Add rides & color code
-    
     rides.forEach(function(ride) {
       var div = document.createElement("div");
       div.className = "ride";
-    
+
       var waitText = "";
       var color = "white";
-    
+
       if (!ride.is_open) {
         waitText = "Closed";
         color = "#888";
       } else {
         var wait = ride.wait_time;
         waitText = wait + " min";
-    
+
         if (wait <= 10) color = "green";
-        else if (wait <= 25) color = "lightgreen";
-        else if (wait <= 45) color = "yellow";
+        else if (wait <= 20) color = "lightgreen";
+        else if (wait <= 40) color = "yellow";
         else if (wait <= 55) color = "orange";
         else color = "red";
       }
-    
+
       div.innerHTML =
         '<span class="ride-name">' + ride.name + '</span>' +
         '<span style="color:' + color + '">' + waitText + '</span>';
-    
+
       container.appendChild(div);
     });
 
-
   });
-
-  // timestamp
-  var now = new Date();
-  document.getElementById("updated").innerHTML =
-    "Last updated: " + now.toLocaleTimeString();
 }
 
 
