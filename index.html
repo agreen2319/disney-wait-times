@@ -20,6 +20,7 @@
 <body>
 
 <h1>Magic Kingdom</h1>
+<p id="updated">Last updated: --</p>
 <div id="rides">Loading...</div>
 
 <script>
@@ -39,6 +40,7 @@ function fetchTimes() {
   xhr.send();
 }
 
+
 function render(data) {
   var container = document.getElementById("rides");
   container.innerHTML = "";
@@ -57,10 +59,16 @@ function render(data) {
       container.appendChild(div);
     });
   });
+
+  // update timestamp
+  var now = new Date();
+  document.getElementById("updated").innerHTML =
+    "Last updated: " + now.toLocaleTimeString();
 }
 
+
 fetchTimes();
-setInterval(fetchTimes, 60000);
+setInterval(fetchTimes, 10000);
 </script>
 
 </body>
