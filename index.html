@@ -29,6 +29,7 @@
 
 <script>
 
+<!--
 var popularRides = [
   "Jungle Cruise",
   "Pirates of the Caribbean",
@@ -49,44 +50,45 @@ var popularRides = [
   "Tomorrowland Transit Authority PeopleMover",
   "TRON Lightcycle / Run"
 ];
-
+-->
+  
 var landOrder = [
-  "Adventureland",
-  "Fantasyland",
-  "Frontierland",
-  "Liberty Square",
-  "Tomorrowland",
+  "MK - Adventureland",
+  "MK - Fantasyland",
+  "MK - Frontierland",
+  "MK - Liberty Square",
+  "MK - Tomorrowland",
 
-  "Hollywood Studios",
   "EPCOT",
+  "Hollywood Studios",
   "Animal Kingdom"
 ];
 
 // Map each ride to a land
 var rideToLand = {
   // Magic Kingdom
-  "Jungle Cruise": "Adventureland",
-  "Pirates of the Caribbean": "Adventureland",
+  "Jungle Cruise": "MK - Adventureland",
+  "Pirates of the Caribbean": "MK - Adventureland",
 
-  "it's a small world": "Fantasyland",
-  "Dumbo the Flying Elephant": "Fantasyland",
-  "Under the Sea ~ Journey of the Little Mermaid": "Fantasyland",
-  "Peter Pan's Flight": "Fantasyland",
-  "Seven Dwarfs Mine Train": "Fantasyland",
-  "The Barnstormer": "Fantasyland",
-  "The Many Adventures of Winnie the Pooh": "Fantasyland",
+  "it's a small world": "MK - Fantasyland",
+  "Dumbo the Flying Elephant": "MK - Fantasyland",
+  "Under the Sea ~ Journey of the Little Mermaid": "MK - Fantasyland",
+  "Peter Pan's Flight": "MK - Fantasyland",
+  "Seven Dwarfs Mine Train": "MK - Fantasyland",
+  "The Barnstormer": "MK - Fantasyland",
+  "The Many Adventures of Winnie the Pooh": "MK - Fantasyland",
 
-  "Big Thunder Mountain Railroad": "Frontierland",
-  "Tiana's Bayou Adventure": "Frontierland",
+  "Big Thunder Mountain Railroad": "MK - Frontierland",
+  "Tiana's Bayou Adventure": "MK - Frontierland",
 
-  "Haunted Mansion": "Liberty Square",
+  "Haunted Mansion": "MK - Liberty Square",
 
-  "Astro Orbiter": "Tomorrowland",
-  "Buzz Lightyear's Space Ranger Spin": "Tomorrowland",
-  "Space Mountain": "Tomorrowland",
-  "Tomorrowland Speedway": "Tomorrowland",
-  "Tomorrowland Transit Authority PeopleMover": "Tomorrowland",
-  "TRON Lightcycle Run": "Tomorrowland",
+  "Astro Orbiter": "MK - Tomorrowland",
+  "Buzz Lightyear's Space Ranger Spin": "MK - Tomorrowland",
+  "Space Mountain": "MK - Tomorrowland",
+  "Tomorrowland Speedway": "MK - Tomorrowland",
+  "Tomorrowland Transit Authority PeopleMover": "MK - Tomorrowland",
+  "TRON Lightcycle Run": "MK - Tomorrowland",
 
   // Hollywood Studios
   "Mickey & Minnie's Runaway Railway": "Hollywood Studios",
@@ -249,7 +251,7 @@ function render(data) {
 
 
 fetchTimes();
-setInterval(fetchTimes, 10000);
+setInterval(fetchTimes, 60000);
 </script>
 
 </body>
