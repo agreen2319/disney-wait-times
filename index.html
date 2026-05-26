@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Disney Wait Times</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: #fff;
+      margin: 0;
+      padding: 10px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .ride {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #333;
+    }
+    .closed {
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Magic Kingdom</h1>
+<div id="rides">Loading...</div>
+
+<script>
+function fetchTimes() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://queue-times.com/parks/6/queue_times.json", true);
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var data = JSON.parse(xhr.responseText);
+      render(data);
+    }
+  };
+
+  xhr.send();
+}
+
+function render(data) {
+  var container = document.getElementById("rides");
+  container.innerHTML = "";
+
+  data.lands.forEach(function(land) {
+    land.rides.forEach(function(ride) {
+      var div = document.createElement("div");
+      div.className = "ride";
+
+      if (!ride.is_open) {
+        div.className += " closed";
+      }
+
+      div.innerHTML =
+        "<span>" + ride.name + "</span>" +
+        "<span>" +
+        (ride.is_open ? ride.wait_time + " min" : "Closed") +
+        "</span>";
+
+      container.appendChild(div);
+    });
+  });
+}
+
+// refresh every 60 seconds
+fetchTimes();
+setInterval(fetchTimes, 60000);
+</script>
+
+</body>
+</html>
