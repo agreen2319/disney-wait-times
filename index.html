@@ -24,6 +24,28 @@
 <div id="rides">Loading...</div>
 
 <script>
+
+var popularRides = [
+  "Jungle Cruise",
+  "Pirates of the Caribbean",
+  "it's a small world",
+  "Dumbo the Flying Elephant",
+  "Under the Sea - Journey of The Little Mermaid",
+  "Peter Pan's Flight",
+  "Seven Dwarfs Mine Train",
+  "The Barnstormer",
+  "The Many Adventures of Winnie the Pooh",
+  "Big Thunder Mountain Railroad",
+  "Tiana's Bayou Adventure",
+  "Haunted Mansion",
+  "Astro Orbiter",
+  "Buzz Lightyear's Space Ranger Spin",
+  "Space Mountain",
+  "Tomorrowland Speedway",
+  "Tomorrowland Transit Authority PeopleMover",
+  "TRON Lightcycle / Run"
+];
+  
 function fetchTimes() {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "https://api.allorigins.win/raw?url=https://queue-times.com/parks/6/queue_times.json", true);
@@ -45,20 +67,34 @@ function render(data) {
   var container = document.getElementById("rides");
   container.innerHTML = "";
 
+  var ridesList = [];
+  
   data.lands.forEach(function(land) {
     land.rides.forEach(function(ride) {
-      var div = document.createElement("div");
-      div.className = "ride";
-
-      div.innerHTML =
-        "<span>" + ride.name + "</span>" +
-        "<span>" +
-        (ride.is_open ? ride.wait_time + " min" : "Closed") +
-        "</span>";
-
-      container.appendChild(div);
+      if (popularRides.indexOf(ride.name) !== -1) {
+        ridesList.push(ride);
+      }
     });
   });
+
+  // sort by wait time (highest first)
+  ridesList.sort(function(a, b) {
+    return (b.wait_time || 0) - (a.wait_time || 0);
+  });
+
+  ridesList.forEach(function(ride) {
+    var div = document.createElement("div");
+    div.className = "ride";
+
+    div.innerHTML =
+      "<span>" + ride.name + "</span>" +
+      "<span>" +
+      (ride.is_open ? ride.wait_time + " min" : "Closed") +
+      "</span>";
+
+    container.appendChild(div);
+  });
+
 
   // update timestamp
   var now = new Date();
