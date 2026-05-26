@@ -21,7 +21,7 @@
     }
     #container {
       display: flex;
-      gap: 50px;
+      gap: 100px;
     }
     .column {
       width: 35%;
@@ -197,15 +197,14 @@ function fetchTimes() {
     "https://queue-times.com/parks/17/queue_times.json"  // DCA
   ];
 
-  var proxy = "https://api.allorigins.win/raw?url=";
-
+  var proxy = "https://glistening-blini-23387c.netlify.app/.netlify/functions/proxy?url=";
   var results = [];
   var completed = 0;
 
   urls.forEach(function(url, index) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", proxy + url, true);
-
+    xhr.open("GET", proxy + encodeURIComponent(url), true);
+    
     xhr.onload = function() {
       if (xhr.status === 200) {
         results[index] = JSON.parse(xhr.responseText);
