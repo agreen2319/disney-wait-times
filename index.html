@@ -7,22 +7,13 @@
     body {
       font-family: Arial;
       background: #111;
-      color: #fff;
-      margin: 0;
+      color: white;
       padding: 10px;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
     }
     .ride {
       display: flex;
       justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #333;
-    }
-    .closed {
-      color: #888;
+      padding: 5px 0;
     }
   </style>
 </head>
@@ -40,6 +31,8 @@ function fetchTimes() {
     if (xhr.status === 200) {
       var data = JSON.parse(xhr.responseText);
       render(data);
+    } else {
+      document.getElementById("rides").innerHTML = "Error loading data";
     }
   };
 
@@ -55,10 +48,6 @@ function render(data) {
       var div = document.createElement("div");
       div.className = "ride";
 
-      if (!ride.is_open) {
-        div.className += " closed";
-      }
-
       div.innerHTML =
         "<span>" + ride.name + "</span>" +
         "<span>" +
@@ -70,7 +59,6 @@ function render(data) {
   });
 }
 
-// refresh every 60 seconds
 fetchTimes();
 setInterval(fetchTimes, 60000);
 </script>
