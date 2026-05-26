@@ -44,55 +44,55 @@ var landOrder = [
 // Map each ride to a land
 var rideToLand = {
   // Magic Kingdom
-  "Jungle Cruise": "MK - Adventureland",
-  "Pirates of the Caribbean": "MK - Adventureland",
+  134: "MK - Adventureland", // Jungle Cruise
+  137: "MK - Adventureland", // Pirates
 
-  "it's a small world": "MK - Fantasyland",
-  "Dumbo the Flying Elephant": "MK - Fantasyland",
-  "Under the Sea ~ Journey of the Little Mermaid": "MK - Fantasyland",
-  "Peter Pan's Flight": "MK - Fantasyland",
-  "Seven Dwarfs Mine Train": "MK - Fantasyland",
-  "The Barnstormer": "MK - Fantasyland",
-  "The Many Adventures of Winnie the Pooh": "MK - Fantasyland",
+  133: "MK - Fantasyland", // small world
+  132: "MK - Fantasyland", // dumbo
+  127: "MK - Fantasyland", // little mermaid
+  136: "MK - Fantasyland", // peter pan
+  129: "MK - Fantasyland", // seven dwarfs
+  126: "MK - Fantasyland", // barnstormer
+  142: "MK - Fantasyland", // pooh
 
-  "Big Thunder Mountain Railroad": "MK - Frontierland",
-  "Tiana's Bayou Adventure": "MK - Frontierland",
+  130: "MK - Frontierland", // thunder
+  13630: "MK - Frontierland", // tiana's
 
-  "Haunted Mansion": "MK - Liberty Square",
+  140: "MK - Liberty Square", // haunted mansion
 
-  "Astro Orbiter": "MK - Tomorrowland",
-  "Buzz Lightyear's Space Ranger Spin": "MK - Tomorrowland",
-  "Space Mountain": "MK - Tomorrowland",
-  "Tomorrowland Speedway": "MK - Tomorrowland",
-  "Tomorrowland Transit Authority PeopleMover": "MK - Tomorrowland",
-  "TRON Lightcycle Run": "MK - Tomorrowland",
+  248: "MK - Tomorrowland", // astro orbiter
+  131: "MK - Tomorrowland", // buzz
+  138: "MK - Tomorrowland", // space
+  143: "MK - Tomorrowland", // AUTOPIA
+  1190: "MK - Tomorrowland", // peoplemover
+  11527: "MK - Tomorrowland", // Tron
 
   // Hollywood Studios
-  "Mickey & Minnie's Runaway Railway": "Hollywood Studios",
-  "Slinky Dog Dash": "Hollywood Studios",
-  "Rock 'n' Roller Coaster Starring Aerosmith": "Hollywood Studios",
-  "The Twilight Zone Tower of Terror": "Hollywood Studios",
-  "Star Tours – The Adventures Continue": "Hollywood Studios",
-  "Millennium Falcon: Smugglers Run": "Hollywood Studios",
-  "Star Wars: Rise of the Resistance": "Hollywood Studios",
+  6361": "Hollywood Studios", // runaway railway
+  5476: "Hollywood Studios", // slinky
+  16342: "Hollywood Studios", // rock n roller
+  123: "Hollywood Studios", // tower of terror
+  120: "Hollywood Studios", // star tours
+  6368: "Hollywood Studios", // smugglers run
+  6369: "Hollywood Studios", // rotr
 
   // EPCOT
-  "Guardians of the Galaxy: Cosmic Rewind": "EPCOT",
-  "Journey Into Imagination With Figment": "EPCOT",
-  "Living with the Land": "EPCOT",
-  "Mission: SPACE": "EPCOT",
-  "Remy's Ratatouille Adventure": "EPCOT",
-  "The Seas with Nemo & Friends": "EPCOT",
-  "Soarin' Around the World": "EPCOT",
-  "Spaceship Earth": "EPCOT",
-  "Test Track": "EPCOT",
+  10916: "EPCOT", // guardians
+  155: "EPCOT", // journey w/ figment
+  156: "EPCOT", // land living
+  158: "EPCOT", // mission space
+  10914: "EPCOT", // remy's
+  153: "EPCOT", // the seas
+  151: "EPCOT", // soarin
+  159: "EPCOT", // spaceship earth
+  160: "EPCOT", // test track
 
   // Animal Kingdom
-  "Avatar Flight of Passage": "Animal Kingdom",
-  "Expedition Everest - Legend of the Forbidden Mountain": "Animal Kingdom",
-  "Kali River Rapids": "Animal Kingdom",
-  "Kilimanjaro Safaris": "Animal Kingdom",
-  "Na'vi River Journey": "Animal Kingdom"
+  4439: "Animal Kingdom", // flight of passage
+  110: "Animal Kingdom", // everest
+  112: "Animal Kingdom", // kali
+  113: "Animal Kingdom", // safaris
+  4438: "Animal Kingdom" // na'vi
 };
   
 
@@ -158,12 +158,11 @@ function render(data) {
   data.lands.forEach(function(apiLand) {
     apiLand.rides.forEach(function(ride) {
 
-      var land = rideToLand[ride.name];
+      var land = rideToLand[ride.id];
 
       if (land) {
         ridesByLand[land].push(ride);
       }
-      console.log(ride.id, ride.name)
 
     });
   });
