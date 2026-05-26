@@ -45,6 +45,42 @@ var popularRides = [
   "Tomorrowland Transit Authority PeopleMover",
   "TRON Lightcycle / Run"
 ];
+
+
+var landOrder = [
+  "Adventureland",
+  "Fantasyland",
+  "Frontierland",
+  "Liberty Square",
+  "Tomorrowland"
+];
+
+// Map each ride to a land
+var rideToLand = {
+  "Jungle Cruise": "Adventureland",
+  "Pirates of the Caribbean": "Adventureland",
+
+  "it's a small world": "Fantasyland",
+  "Dumbo the Flying Elephant": "Fantasyland",
+  "Under the Sea - Journey of the Little Mermaid": "Fantasyland",
+  "Peter Pan's Flight": "Fantasyland",
+  "Seven Dwarfs Mine Train": "Fantasyland",
+  "The Barnstormer": "Fantasyland",
+  "The Many Adventures of Winnie the Pooh": "Fantasyland",
+
+  "Big Thunder Mountain Railroad": "Frontierland",
+  "Tiana's Bayou Adventure": "Frontierland",
+
+  "Haunted Mansion": "Liberty Square",
+
+  "Astro Orbiter": "Tomorrowland",
+  "Buzz Lightyear's Space Ranger Spin": "Tomorrowland",
+  "Space Mountain": "Tomorrowland",
+  "Tomorrowland Speedway": "Tomorrowland",
+  "Tomorrowland Transit Authority PeopleMover": "Tomorrowland",
+  "TRON Lightcycle / Run": "Tomorrowland"
+};
+
   
 function fetchTimes() {
   var xhr = new XMLHttpRequest();
@@ -67,36 +103,63 @@ function render(data) {
   var container = document.getElementById("rides");
   container.innerHTML = "";
 
-  var ridesList = [];
-  
-  data.lands.forEach(function(land) {
-    land.rides.forEach(function(ride) {
-      if (popularRides.indexOf(ride.name) !== -1) {
-        ridesList.push(ride);
+  var ridesByLand = {};
+
+  // Initialize each land
+  landOrder.forEach(function(land) {
+    ridesByLand[land] = [];
+  });
+
+  // Collect rides
+  data.lands.forEach(function(apiLand) {
+    apiLand.rides.forEach(function(ride) {
+
+      var land = rideToLand[ride.name];
+
+      if (land) {
+        ridesByLand[land].push(ride);
       }
+
     });
   });
 
-  // sort by wait time (highest first)
-  ridesList.sort(function(a, b) {
-    return (b.wait_time || 0) - (a.wait_time || 0);
+  // Render in order
+  landOrder.forEach(function(land) {
+
+    var rides = ridesByLand[land];
+
+    if (rides.length === 0) return;
+
+    // Sort by wait time (highest first)
+    rides.sort(function(a, b) {
+      return (b.wait_time || 0) - (a.wait_time || 0);
+    });
+
+    // Add land header
+    var header = document.createElement("h2");
+    header.innerText = land;
+    header.style.fontSize = "18px";
+    header.style.marginTop = "15px";
+
+    container.appendChild(header);
+
+    // Add rides
+    rides.forEach(function(ride) {
+      var div = document.createElement("div");
+      div.className = "ride";
+
+      div.innerHTML =
+        "<span>" + ride.name + "</span>" +
+        "<span>" +
+        (ride.is_open ? ride.wait_time + " min" : "Closed") +
+        "</span>";
+
+      container.appendChild(div);
+    });
+
   });
 
-  ridesList.forEach(function(ride) {
-    var div = document.createElement("div");
-    div.className = "ride";
-
-    div.innerHTML =
-      "<span>" + ride.name + "</span>" +
-      "<span>" +
-      (ride.is_open ? ride.wait_time + " min" : "Closed") +
-      "</span>";
-
-    container.appendChild(div);
-  });
-
-
-  // update timestamp
+  // timestamp
   var now = new Date();
   document.getElementById("updated").innerHTML =
     "Last updated: " + now.toLocaleTimeString();
