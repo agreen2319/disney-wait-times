@@ -50,23 +50,27 @@ var popularRides = [
   "TRON Lightcycle / Run"
 ];
 
-
 var landOrder = [
   "Adventureland",
   "Fantasyland",
   "Frontierland",
   "Liberty Square",
-  "Tomorrowland"
+  "Tomorrowland",
+
+  "Hollywood Studios",
+  "EPCOT",
+  "Animal Kingdom"
 ];
 
 // Map each ride to a land
 var rideToLand = {
+  // Magic Kingdom
   "Jungle Cruise": "Adventureland",
   "Pirates of the Caribbean": "Adventureland",
 
   "it's a small world": "Fantasyland",
   "Dumbo the Flying Elephant": "Fantasyland",
-  "Under the Sea - Journey of the Little Mermaid": "Fantasyland",
+  "Under the Sea ~ Journey of the Little Mermaid": "Fantasyland",
   "Peter Pan's Flight": "Fantasyland",
   "Seven Dwarfs Mine Train": "Fantasyland",
   "The Barnstormer": "Fantasyland",
@@ -82,26 +86,83 @@ var rideToLand = {
   "Space Mountain": "Tomorrowland",
   "Tomorrowland Speedway": "Tomorrowland",
   "Tomorrowland Transit Authority PeopleMover": "Tomorrowland",
-  "TRON Lightcycle / Run": "Tomorrowland"
+  "TRON Lightcycle Run": "Tomorrowland",
+
+  // Hollywood Studios
+  "Mickey & Minnie's Runaway Railway": "Hollywood Studios",
+  "Slinky Dog Dash": "Hollywood Studios",
+  "Rock 'n' Roller Coaster Starring Aerosmith": "Hollywood Studios",
+  "The Twilight Zone Tower of Terror": "Hollywood Studios",
+  "Star Tours – The Adventures Continue": "Hollywood Studios",
+  "Millennium Falcon: Smugglers Run": "Hollywood Studios",
+  "Star Wars: Rise of the Resistance": "Hollywood Studios",
+
+  // EPCOT
+  "Guardians of the Galaxy: Cosmic Rewind": "EPCOT",
+  "Journey Into Imagination With Figment": "EPCOT",
+  "Living with the Land": "EPCOT",
+  "Mission: SPACE": "EPCOT",
+  "Remy's Ratatouille Adventure": "EPCOT",
+  "The Seas with Nemo & Friends": "EPCOT",
+  "Soarin' Around the World": "EPCOT",
+  "Spaceship Earth": "EPCOT",
+  "Test Track": "EPCOT",
+
+  // Animal Kingdom
+  "Avatar Flight of Passage": "Animal Kingdom",
+  "Expedition Everest - Legend of the Forbidden Mountain": "Animal Kingdom",
+  "Kali River Rapids": "Animal Kingdom",
+  "Kilimanjaro Safaris": "Animal Kingdom",
+  "Na'vi River Journey": "Animal Kingdom"
 };
-
   
+
 function fetchTimes() {
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "https://api.allorigins.win/raw?url=https://queue-times.com/parks/6/queue_times.json", true);
+  var urls = [
+    "https://queue-times.com/parks/6/queue_times.json",  // Magic Kingdom
+    "https://queue-times.com/parks/7/queue_times.json",  // Hollywood Studios
+    "https://queue-times.com/parks/8/queue_times.json",  // Animal Kingdom
+    "https://queue-times.com/parks/5/queue_times.json"   // EPCOT
+  ];
 
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      var data = JSON.parse(xhr.responseText);
-      render(data);
-    } else {
-      document.getElementById("rides").innerHTML = "Error loading data";
-    }
-  };
+  var proxy = "https://api.allorigins.win/raw?url=";
 
-  xhr.send();
+  var results = [];
+  var completed = 0;
+
+  urls.forEach(function(url, index) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", proxy + url, true);
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        results[index] = JSON.parse(xhr.responseText);
+      }
+
+      completed++;
+
+      if (completed === urls.length) {
+        combineAndRender(results);
+      }
+    };
+
+    xhr.send();
+  });
 }
 
+  
+function combineAndRender(allData) {
+  var combined = { lands: [] };
+
+  allData.forEach(function(data) {
+    if (data && data.lands) {
+      combined.lands = combined.lands.concat(data.lands);
+    }
+  });
+
+  render(combined);
+}
+  
 
 function render(data) {
   var container = document.getElementById("rides");
