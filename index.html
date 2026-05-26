@@ -143,19 +143,36 @@ function render(data) {
 
     container.appendChild(header);
 
-    // Add rides
+    // Add rides & color code
+    
     rides.forEach(function(ride) {
       var div = document.createElement("div");
       div.className = "ride";
-
+    
+      var waitText = "";
+      var color = "white";
+    
+      if (!ride.is_open) {
+        waitText = "Closed";
+        color = "#888";
+      } else {
+        var wait = ride.wait_time;
+        waitText = wait + " min";
+    
+        if (wait <= 10) color = "green";
+        else if (wait <= 20) color = "lightgreen";
+        else if (wait <= 40) color = "yellow";
+        else if (wait <= 55) color = "orange";
+        else color = "red";
+      }
+    
       div.innerHTML =
-        "<span>" + ride.name + "</span>" +
-        "<span>" +
-        (ride.is_open ? ride.wait_time + " min" : "Closed") +
-        "</span>";
-
+        '<span class="ride-name">' + ride.name + '</span>' +
+        '<span style="color:' + color + '">' + waitText + '</span>';
+    
       container.appendChild(div);
     });
+
 
   });
 
